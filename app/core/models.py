@@ -48,3 +48,11 @@ class Revendedor(models.Model):
     )
     cpf = models.CharField(max_length=14, unique=True)
     name = models.CharField(max_length=255, blank=False)
+
+
+class Compra(models.Model):
+    """Compra model that stores purchases informations"""
+    code = models.IntegerField(blank=False)
+    value = models.FloatField(blank=False)
+    date = models.DateField(blank=False)
+    revendedor = models.ForeignKey(Revendedor, on_delete=models.CASCADE)
