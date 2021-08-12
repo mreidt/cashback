@@ -157,4 +157,64 @@ class ModelTests(TestCase):
         self.assertEqual(compra.date, data)
         self.assertEqual(compra.revendedor, revendedor)
 
+    def test_create_compra_no_code(self):
+        """Test creating compra with no code fails"""
+        codigo = None
+        valor = 9.9
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = sample_revendedor()
+
+        with self.assertRaises(IntegrityError):
+            models.Compra.objects.create(
+                code=codigo,
+                value=valor,
+                date=data,
+                revendedor=revendedor
+            )
+
+    def test_create_compra_no_value(self):
+        """Test creating compra with no value fails"""
+        codigo = 1
+        valor = None
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = sample_revendedor()
+
+        with self.assertRaises(IntegrityError):
+            models.Compra.objects.create(
+                code=codigo,
+                value=valor,
+                date=data,
+                revendedor=revendedor
+            )
+
+    def test_create_compra_no_date(self):
+        """Test creating compra with no date fails"""
+        codigo = 1
+        valor = 14.0
+        data = None
+        revendedor = sample_revendedor()
+
+        with self.assertRaises(IntegrityError):
+            models.Compra.objects.create(
+                code=codigo,
+                value=valor,
+                date=data,
+                revendedor=revendedor
+            )
+
+    def test_create_compra_no_revendedor(self):
+        """Test creating compra with no revendedor fails"""
+        codigo = 1
+        valor = 14.0
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = None
+
+        with self.assertRaises(IntegrityError):
+            models.Compra.objects.create(
+                code=codigo,
+                value=valor,
+                date=data,
+                revendedor=revendedor
+            )
+
     # endregion
