@@ -1,7 +1,23 @@
+import datetime
+
 from core import models
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.test import TestCase
+
+
+def sample_revendedor(
+        email='revendedor@grupoboticario.com.br',
+        name='Revendedor Teste',
+        cpf='077.282.440-19',
+        password='pass123'):
+    """Creates a sample revendedor"""
+    return models.Revendedor.objects.create(
+        email=email,
+        name=name,
+        cpf=cpf,
+        password=password
+    )
 
 
 class ModelTests(TestCase):
@@ -11,15 +27,12 @@ class ModelTests(TestCase):
         """Test creating a new user with an email is successful"""
         email = 'teste@grupoboticario.com.br'
         password = 'pass123'
-        name = 'User 1'
         user = get_user_model().objects.create_user(
             email=email,
-            password=password,
-            name=name
+            password=password
         )
 
         self.assertEqual(user.email, email)
-        self.assertEqual(user.name, name)
         self.assertTrue(user.check_password(password))
 
     def test_new_user_email_normalized(self):
@@ -27,8 +40,7 @@ class ModelTests(TestCase):
         email = 'teste@GRUPOBOTICARIO.COM.BR'
         user = get_user_model().objects.create_user(
             email=email,
-            password='pass123',
-            name='user 1'
+            password='pass123'
         )
 
         self.assertEqual(user.email, email.lower())
@@ -38,16 +50,14 @@ class ModelTests(TestCase):
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(
                 email=None,
-                password='pass123',
-                name='name'
+                password='pass123'
             )
 
     def test_create_new_superuser(self):
         """Test creating a new superuser"""
         user = get_user_model().objects.create_superuser(
             email='teste@grupoboticario.com.br',
-            password='pass123',
-            name='super user 1'
+            password='pass123'
         )
 
         self.assertTrue(user.is_superuser)
@@ -59,15 +69,13 @@ class ModelTests(TestCase):
 
         get_user_model().objects.create_user(
             email=email,
-            password='pass123',
-            name='user 1'
+            password='pass123'
         )
 
         with self.assertRaises(IntegrityError):
             get_user_model().objects.create_user(
                 email=email,
-                password='123pass',
-                name='user 2'
+                password='123pass'
             )
     # endregion
 
@@ -125,5 +133,27 @@ class ModelTests(TestCase):
                 name='revendedor 2',
                 cpf='093.118.300-62'
             )
+
+    # endregion
+
+    # region Compra Tests
+    def test_create_compra_successful(self):
+        """Test creating compra successful"""
+        codigo = 1
+        valor = 9.9
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = sample_revendedor()
+
+        compra = models.Compra.objects.create(
+            code=codigo,
+            value=valor,
+            date=data,
+            revendedor=revendedor
+        )
+
+        self.assertEqual(compra.code, codigo)
+        self.assertEqual(compra.value, valor)
+        self.assertEqual(compra.date, data)
+        self.assertEqual(compra.revendedor, revendedor)
 
     # endregion
