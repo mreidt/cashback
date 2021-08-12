@@ -39,7 +39,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
-class Revendedor(User):
+class Revendedor(models.Model):
     """Extends user to add cpf"""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
     cpf = models.CharField(max_length=14, unique=True)
     name = models.CharField(max_length=255, blank=False)

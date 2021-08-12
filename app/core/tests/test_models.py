@@ -13,9 +13,19 @@ def sample_revendedor(
         password='pass123'):
     """Creates a sample revendedor"""
     return models.Revendedor.objects.create(
-        email=email,
+        user=sample_user(
+            email=email,
+            password=password
+        ),
         name=name,
-        cpf=cpf,
+        cpf=cpf
+    )
+
+
+def sample_user(email='user@grupoboticario.com.br', password='pass123'):
+    """Creates a sample user"""
+    return get_user_model().objects.create_user(
+        email=email,
         password=password
     )
 
@@ -86,54 +96,45 @@ class ModelTests(TestCase):
         password = 'pass123'
         name = 'User 1'
         cpf = '713.765.400-29'
-        user = models.Revendedor.objects.create_user(
-            email=email,
-            password=password,
+        user = sample_user(email=email, password=password)
+        revendedor = models.Revendedor.objects.create(
+            user=user,
             name=name,
             cpf=cpf
         )
 
-        self.assertEqual(user.email, email)
-        self.assertEqual(user.name, name)
-        self.assertTrue(user.check_password(password))
-        self.assertEqual(user.cpf, cpf)
+        self.assertEqual(revendedor.user.email, email)
+        self.assertEqual(revendedor.name, name)
+        self.assertTrue(revendedor.user.check_password(password))
+        self.assertEqual(revendedor.cpf, cpf)
 
     def test_create_revendedor_same_cpf_fails(self):
         """Test creating revendedor with same cpf raises error"""
         cpf = '713.765.400-29'
-        models.Revendedor.objects.create_user(
-            email='user1@grupoboticario.com.br',
-            password='pass123',
+        models.Revendedor.objects.create(
+            user=sample_user(),
             name='revendedor 1',
             cpf=cpf
         )
 
         with self.assertRaises(IntegrityError):
-            models.Revendedor.objects.create_user(
-                email='user2@grupoboticario.com.br',
-                password='123pass',
+            models.Revendedor.objects.create(
+                user=sample_user(
+                    email='user2@grupoboticario.com.br',
+                    password='123pass'
+                ),
                 name='revendedor 2',
                 cpf=cpf
             )
 
-    def test_create_revendedor_same_email_fails(self):
-        """Test creating revendedor with same email raises error"""
-        email = 'revendedor@grupoboticario.com.br'
-        models.Revendedor.objects.create_user(
-            email=email,
-            password='pass123',
-            name='revendedor 1',
-            cpf='761.563.350-80'
-        )
-
+    def test_create_revendedor_no_name(self):
+        """Test creating revendedor with no name raises error"""
         with self.assertRaises(IntegrityError):
-            models.Revendedor.objects.create_user(
-                email=email,
-                password='123pass',
-                name='revendedor 2',
-                cpf='093.118.300-62'
+            models.Revendedor.objects.create(
+                user=sample_user(),
+                cpf='093.118.300-62',
+                name=None
             )
-
     # endregion
 
     # region Compra Tests
