@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 
 from core import models
 from django.contrib.auth import get_user_model
@@ -28,6 +29,30 @@ def sample_user(email='user@grupoboticario.com.br', password='pass123'):
         email=email,
         password=password
     )
+
+
+def sample_compra(
+        code=1,
+        value=1.0,
+        date=datetime.datetime(
+            2021,
+            5,
+            29),
+        cpf='077.282.440-19'):
+    """Creates a sample purchase"""
+    return models.Compra.objects.create(
+        code=code,
+        value=value,
+        date=date,
+        revendedor=sample_revendedor(cpf=cpf)
+    )
+
+
+class Status(Enum):
+    """Enum to represent purchases Status"""
+    EM_VALIDACAO = 1
+    APROVADO = 2
+    NAO_APROVADO = 3
 
 
 class ModelTests(TestCase):
@@ -286,4 +311,10 @@ class ModelTests(TestCase):
                 date=data,
                 revendedor=revendedor
             )
+
+    def test_create_compra_check_status(self):
+        """Test the status of a new purchase"""
+        compra = sample_compra()
+
+        self.assertEqual(compra.status, Status.EM_VALIDACAO.value)
     # endregion
