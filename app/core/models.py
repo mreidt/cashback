@@ -55,10 +55,17 @@ class Revendedor(models.Model):
 
 class Compra(models.Model):
     """Compra model that stores purchases informations"""
+
+    class Status(models.IntegerChoices):
+        EM_VALIDACAO = 1
+        APROVADO = 2
+        NAO_APROVADO = 3
+
     code = models.IntegerField(unique=True)
     value = models.FloatField(blank=False)
     date = models.DateField(blank=False)
     revendedor = models.ForeignKey(Revendedor, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=Status.choices, default=1)
 
     def __str__(self) -> str:
         return str(self.code)
