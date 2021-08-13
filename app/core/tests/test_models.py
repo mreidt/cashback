@@ -87,6 +87,17 @@ class ModelTests(TestCase):
                 email=email,
                 password='123pass'
             )
+
+    def test_user_string_representation(self):
+        """Test User model string representation"""
+        email = 'teste@grupoboticario.com.br'
+        password = 'pass123'
+        user = get_user_model().objects.create_user(
+            email=email,
+            password=password
+        )
+
+        self.assertEqual(str(user), email)
     # endregion
 
     # region Revendedor Tests
@@ -135,6 +146,21 @@ class ModelTests(TestCase):
                 cpf='093.118.300-62',
                 name=None
             )
+
+    def test_revendedor_string_representation(self):
+        """Test Revendedor model string representation"""
+        email = 'teste@grupoboticario.com.br'
+        password = 'pass123'
+        name = 'User 1'
+        cpf = '713.765.400-29'
+        revendedor = models.Revendedor.objects.create(
+            user=sample_user(email=email, password=password),
+            name=name,
+            cpf=cpf
+        )
+
+        self.assertEqual(str(revendedor), name)
+
     # endregion
 
     # region Compra Tests
@@ -217,4 +243,47 @@ class ModelTests(TestCase):
                 revendedor=revendedor
             )
 
+    def test_compra_string_representation(self):
+        """Test Compra model string representation"""
+        codigo = 1
+        valor = 9.9
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = sample_revendedor()
+
+        compra = models.Compra.objects.create(
+            code=codigo,
+            value=valor,
+            date=data,
+            revendedor=revendedor
+        )
+
+        self.assertEqual(str(compra), str(codigo))
+
+    def test_compra_same_code(self):
+        """Test that two purchases with same code fails"""
+        codigo = 1
+        valor = 9.9
+        data = datetime.datetime(2021, 5, 29)
+        revendedor = sample_revendedor()
+
+        models.Compra.objects.create(
+            code=codigo,
+            value=valor,
+            date=data,
+            revendedor=revendedor
+        )
+
+        valor = 1.0
+        data = datetime.datetime(2021, 1, 1)
+        revendedor = sample_revendedor(
+            email='anotheruser@grupoboticario.com.br',
+            cpf='456.370.660-43'
+        )
+        with self.assertRaises(IntegrityError):
+            models.Compra.objects.create(
+                code=codigo,
+                value=valor,
+                date=data,
+                revendedor=revendedor
+            )
     # endregion
