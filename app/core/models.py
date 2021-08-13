@@ -49,10 +49,16 @@ class Revendedor(models.Model):
     cpf = models.CharField(max_length=14, unique=True)
     name = models.CharField(max_length=255, blank=False)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Compra(models.Model):
     """Compra model that stores purchases informations"""
-    code = models.IntegerField(blank=False)
+    code = models.IntegerField(unique=True)
     value = models.FloatField(blank=False)
     date = models.DateField(blank=False)
     revendedor = models.ForeignKey(Revendedor, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.code)
