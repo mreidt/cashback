@@ -1,10 +1,10 @@
 import requests
 from cashback.serializers import CompraSerializer
 from core.models import Compra, Revendedor
-from rest_framework import authentication, permissions, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from rest_framework_simplejwt import authentication
 
 EXT_URL = 'https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com/v1/cashback'
 
@@ -13,7 +13,7 @@ class CompraViewSet(viewsets.ModelViewSet):
     """Manage purchases in the database"""
     queryset = Compra.objects.all()
     serializer_class = CompraSerializer
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (authentication.JWTAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_revendedor(self):

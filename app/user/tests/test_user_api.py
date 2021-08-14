@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 URL_CREATE_USER = reverse('user:create')
-URL_TOKEN = reverse('user:token')
+URL_TOKEN = reverse('token_obtain_pair')
 URL_ME = reverse('user:me')
 URL_CREATE_REVENDEDOR = reverse('user:create-revendedor')
 URL_PROFILE = reverse('user:profile')
@@ -73,7 +73,7 @@ class PublicUserApiTests(TestCase):
         create_user(**payload)
         res = self.client.post(URL_TOKEN, payload)
 
-        self.assertIn('token', res.data)
+        self.assertIn('access', res.data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_create_token_invalid_credentials(self):
@@ -83,8 +83,8 @@ class PublicUserApiTests(TestCase):
         payload = {'email': email, 'password': 'wrongpass123'}
         res = self.client.post(URL_TOKEN, payload)
 
-        self.assertNotIn('token', res.data)
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_token_invalid_user(self):
         """Test that token is not created for an inexistent user"""
@@ -94,8 +94,8 @@ class PublicUserApiTests(TestCase):
         }
         res = self.client.post(URL_TOKEN, payload)
 
-        self.assertNotIn('token', res.data)
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_authentication_user_details(self):
         """Test that authentication is required to get user details"""
