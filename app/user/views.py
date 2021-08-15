@@ -22,7 +22,7 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-class CreateRevendedorView(generics.ListCreateAPIView):
+class CreateRevendedorView(generics.CreateAPIView):
     """Create a new revendedor"""
     serializer_class = UserRevendedorSerializer
     queryset = Revendedor.objects.all()
