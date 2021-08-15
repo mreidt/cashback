@@ -1,5 +1,5 @@
 from core.models import Revendedor
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers, status
@@ -33,34 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
-
-
-class AuthTokenSerializer(serializers.Serializer):
-    """Serializer for user authentication object"""
-    email = serializers.CharField()
-    password = serializers.CharField(
-        style={'input_type': 'password'},
-        trim_whitespace=False
-    )
-
-    def validate(self, attrs):
-        """Validate and authenticate user"""
-        email = attrs.get('email')
-        password = attrs.get('password')
-
-        user = authenticate(
-            request=self.context.get('request'),
-            username=email,
-            password=password
-        )
-        if not user:
-            message = _(
-                'Invalid credentials provided!'
-            )
-            raise serializers.ValidationError(message, code='authentication')
-
-        attrs['user'] = user
-        return attrs
 
 
 class RevendedorSerializer(serializers.ModelSerializer):
