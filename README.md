@@ -1,5 +1,15 @@
 # cashback
 
+## Documentação
+
+A documentação foi criada utilizando o Sphinx, portanto, para gerar os arquivos é necessário ter o pacote instalado.
+
+Para instruções de instalação, seguir o seguinte link: https://www.sphinx-doc.org/en/master/usage/installation.html
+
+Após instalado o Sphinx, basta entrar no diretório docs e executar o seguinte comando: make html
+
+Isso irá gerar a documentação em formato html, no diretório docs/build/html
+
 ## PROBLEMA/OPORTUNIDADE
 
 O Boticário tem várias soluções para ajudar seus revendedores(as) a gerir suas finanças e alavancar suas vendas. Também existem iniciativas para impulsionar as operações de vendas como metas gameficadas e desconto em grandes quantidades de compras.
